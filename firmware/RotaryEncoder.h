@@ -1,5 +1,5 @@
 /*
-Copyright 2018 <Pierre Constantineau, Julian Komaromy>
+Copyright 2020 <Pierre Constantineau, Julian Komaromy>
 
 3-Clause BSD License
 
@@ -19,67 +19,41 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 */
 #include "advanced_keycodes.h"
 #include "hid_keycodes.h"
-#ifndef KEY_STATE
-#define KEY_STATE
+
+#ifndef ROTARY_ENCODER_H
+#define ROTARY_ENCODER_H
+
+// State inputA  inputB  
+//   A     0        0
+//   B     0        1
+//   C     1        0
+//   D     1        1
+
+// State Transitions
+// A -> B  = CW
+// A -> C  = CCW
+// A -> D  = not valid
+// B -> A  = CCW
+// B -> C  = not valid
+// B -> D  = CW
+// C -> A  = CW
+// C -> B  = not valid
+// C -> D  = CCW
+// D -> A  = not valid
+// D -> B  = CCW
+// D -> C  = CW
 
 
-#include "keyboard_config.h"
-#include "firmware_config.h"
-
-
-
-
-#ifndef DOUBLETAP_TIME_LIMIT
-  #define DOUBLETAP_TIME_LIMIT 300
-#endif
-#ifndef TIME_TILL_HOLD
-  #define TIME_TILL_HOLD 200
-#endif
-#ifndef TIME_TILL_RELEASE
-  #define TIME_TILL_RELEASE 80
-#endif
-
-enum class Method {
-    PRESS = 0,
-    MT_TAP = 1,
-    MT_HOLD = 2,
-    DT_TAP = 3,
-    DT_DOUBLETAP = 4,
-    NONE = 5,
-};
-
-class KeyState 
-{
+class RotaryEncoder {
     public:
-        KeyState();
-        
-        void press(unsigned long currentMillis);
-        void clear(unsigned long currentMillis);
-
-        void addMethod(Method method);
-
-        enum class State
-        {
-            RELEASED,       // simply released 
-            PRESSED,        // a simple press
-
-            MT_TAPPED,      // a released press
-            MT_HELD,        // a constant press
-            
-            DT_TAPPED,      // if a tap can't be doubled anymore
-            DT_DOUBLETAPPED // two presses with a release/tap in between
-        };
-
-        State getState() const;
-
+        RotaryEncoder(uint16_t detectKeyCodeA, uint16_t detectKeyCodeB, uint16_t sendKeyCodeCW, uint16_t sendKeyCodeCCW);
     private:
-        bool canDoubletap;
-        bool checkModTap, checkDoubleTap;
+        static uint16_t C2AKeycode;
+        static uint16_t C2BKeycode;
+        static uint16_t CWKeycode;
+        static uint16_t CCWKeycode;   
 
-        //std::array<5, bool> checkMethods;
 
-        State state;
-        unsigned long lastChanged;
-};
+    };
 
-#endif
+#endif /* KEY_H */

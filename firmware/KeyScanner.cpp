@@ -22,7 +22,6 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 
 // ToDo: There seems to be lots of redundency in data.
 // ToDo: consider interrupts or GPIOTE
-// ToDo: there must be a better way to debounce
 // ToDo: consider multiple boards and the merging of multiple buffers/modifiers and layer requests.
 
 
@@ -317,6 +316,7 @@ bool KeyScanner::updateLayer()
 
 bool KeyScanner::getReport()
 {
+    rotaryEncoderBuffer.clear();
     previousReport[0] = currentReport[0];
     previousReport[1] = currentReport[1];
     previousReport[2] = currentReport[2];
@@ -361,6 +361,7 @@ bool KeyScanner::getReport()
             case KC_RESERVED_A8: consumer = keycode;  extraModifiers=0; break;              // KC_RESERVED_A8 is the keycode marker for repeating consumer reports.
             case KC_RESERVED_A9: mouse = keycode; extraModifiers=0; break;                  // KC_RESERVED_A8 is the keycode marker for mouse reports. Mousekeys can be repeated... We therefore don't need the macro logic
             case KC_RESERVED_AA: special_key = keycode; extraModifiers=0; break;            // KC_RESERVED_AA is the keycode marker for special keys.
+            case KC_RESERVED_AB: rotaryEncoderBuffer.push_back(keycode);break;
         }
         //add all of the extra modifiers into the curren modifier 
         currentMod |= extraModifiers;
@@ -433,3 +434,4 @@ std::vector<uint16_t> KeyScanner::macroBuffer {};
 std::vector<uint16_t> KeyScanner::toggleBuffer {};
 std::vector<uint16_t> KeyScanner::leaderBuffer {};
 std::vector<uint16_t> KeyScanner::oneshotBuffer {};
+std::vector<uint16_t> KeyScanner::rotaryEncoderBuffer {};

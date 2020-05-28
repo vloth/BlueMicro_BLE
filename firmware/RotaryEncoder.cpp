@@ -1,5 +1,5 @@
 /*
-Copyright 2018 <Pierre Constantineau, Julian Komaromy>
+Copyright 2020 <Pierre Constantineau, Julian Komaromy>
 
 3-Clause BSD License
 
@@ -17,69 +17,13 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-#include "advanced_keycodes.h"
-#include "hid_keycodes.h"
-#ifndef KEY_STATE
-#define KEY_STATE
+#include "RotaryEncoder.h"
 
 
-#include "keyboard_config.h"
-#include "firmware_config.h"
-
-
-
-
-#ifndef DOUBLETAP_TIME_LIMIT
-  #define DOUBLETAP_TIME_LIMIT 300
-#endif
-#ifndef TIME_TILL_HOLD
-  #define TIME_TILL_HOLD 200
-#endif
-#ifndef TIME_TILL_RELEASE
-  #define TIME_TILL_RELEASE 80
-#endif
-
-enum class Method {
-    PRESS = 0,
-    MT_TAP = 1,
-    MT_HOLD = 2,
-    DT_TAP = 3,
-    DT_DOUBLETAP = 4,
-    NONE = 5,
-};
-
-class KeyState 
+RotaryEncoder::RotaryEncoder(uint16_t detectKeyCodeA, uint16_t detectKeyCodeB, uint16_t sendKeyCodeCW, uint16_t sendKeyCodeCCW)
 {
-    public:
-        KeyState();
-        
-        void press(unsigned long currentMillis);
-        void clear(unsigned long currentMillis);
-
-        void addMethod(Method method);
-
-        enum class State
-        {
-            RELEASED,       // simply released 
-            PRESSED,        // a simple press
-
-            MT_TAPPED,      // a released press
-            MT_HELD,        // a constant press
-            
-            DT_TAPPED,      // if a tap can't be doubled anymore
-            DT_DOUBLETAPPED // two presses with a release/tap in between
-        };
-
-        State getState() const;
-
-    private:
-        bool canDoubletap;
-        bool checkModTap, checkDoubleTap;
-
-        //std::array<5, bool> checkMethods;
-
-        State state;
-        unsigned long lastChanged;
-};
-
-#endif
+    C2AKeycode = detectKeyCodeA;
+    C2BKeycode = detectKeyCodeB;
+    CWKeycode  = sendKeyCodeCW;
+    CCWKeycode = sendKeyCodeCCW; 
+}
