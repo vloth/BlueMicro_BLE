@@ -19,11 +19,168 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 */
 #include "RotaryEncoder.h"
 
+std::vector<RotaryEncoder> encoders ;
 
 RotaryEncoder::RotaryEncoder(uint16_t detectKeyCodeA, uint16_t detectKeyCodeB, uint16_t sendKeyCodeCW, uint16_t sendKeyCodeCCW)
 {
-    C2AKeycode = detectKeyCodeA;
-    C2BKeycode = detectKeyCodeB;
-    CWKeycode  = sendKeyCodeCW;
-    CCWKeycode = sendKeyCodeCCW; 
+    C2AKeycode = detectKeyCodeA ;
+    C2BKeycode = detectKeyCodeB ;
+    CWKeycode  = sendKeyCodeCW ;
+    CCWKeycode = sendKeyCodeCCW ;  
+    statusA = false;
+    statusB = false;
+    State = Encoderstate::ENCODER_STATE_UNKNOWN;
+}
+
+void RotaryEncoder::StartDetect()
+{
+    statusA = false;
+    statusB = false;
+}
+
+void RotaryEncoder::ProcessKeycode(uint16_t KeyCode)
+{
+    if (KeyCode == C2AKeycode) 
+    {
+       statusA = true;
+    }
+    else if (KeyCode == C2AKeycode) 
+    {
+       statusB = true;
+    }
+}
+
+
+uint16_t RotaryEncoder::CompleteDetectTest(void)
+{
+    if (statusA) // A
+    {
+        if (statusB) // A & B
+        {
+            return CWKeycode;
+        } 
+        else         // A & !B
+        {
+            return CWKeycode+1; // we see this once
+        }       
+    } 
+    else //!A
+    {
+         if (statusB) // !A & B
+        {
+            return CWKeycode+2;
+        } 
+        else         // !A & !B
+        {
+            return 0;  // we see this
+        }         
+    }
+}
+
+uint16_t RotaryEncoder::CompleteDetect(void)
+{
+    Encoderstate newState;
+
+    // State inputA  inputB  
+    //   A     0        0
+    //   B     0        1
+    //   C     1        0
+    //   D     1        1
+    if (statusA) // A
+    {
+        if (statusB) // A & B
+        {
+            newState = Encoderstate::ENCODER_STATE_D;
+        } 
+        else         // A & !B
+        {
+            newState = Encoderstate::ENCODER_STATE_C;
+        }       
+    } 
+    else //!A
+    {
+         if (statusB) // !A & B
+        {
+            newState = Encoderstate::ENCODER_STATE_B;
+        } 
+        else         // !A & !B
+        {
+            newState = Encoderstate::ENCODER_STATE_A;
+        }         
+    }
+    
+    // State Transitions
+    // A -> B  = CW
+    // A -> C  = CCW
+    // A -> D  = not valid
+    // B -> A  = CCW
+    // B -> C  = not valid
+    // B -> D  = CW
+    // C -> A  = CW
+    // C -> B  = not valid
+    // C -> D  = CCW
+    // D -> A  = not valid
+    // D -> B  = CCW
+    // D -> C  = CW
+    switch (State)
+    {
+        case Encoderstate::ENCODER_STATE_UNKNOWN: 
+                State = newState;
+                return 0;
+            break;
+        case Encoderstate::ENCODER_STATE_A: 
+            switch (newState)
+            {
+                case Encoderstate::ENCODER_STATE_B: // CW
+                    State = newState;
+                    return CWKeycode;
+                    break;
+                case Encoderstate::ENCODER_STATE_C: // CCW
+                    State = newState;
+                    return CCWKeycode;
+                    break;
+            }
+            break;
+        case Encoderstate::ENCODER_STATE_B:
+            switch (newState)
+            {
+                case Encoderstate::ENCODER_STATE_A: // CCW
+                    State = newState;
+                    return CCWKeycode;
+                    break;
+                case Encoderstate::ENCODER_STATE_D: // CW
+                    State = newState;
+                    return CWKeycode;
+                    break;
+            } 
+            break;
+        case Encoderstate::ENCODER_STATE_C: 
+            switch (newState)
+            {
+                case Encoderstate::ENCODER_STATE_A: // CW
+                    State = newState;
+                    return CWKeycode;
+                    break;
+                case Encoderstate::ENCODER_STATE_D: // CCW
+                    State = newState;
+                    return CCWKeycode;
+                    break;
+            } 
+            break;
+        case Encoderstate::ENCODER_STATE_D: 
+            switch (newState)
+            {
+                case Encoderstate::ENCODER_STATE_B: // CCW
+                    State = newState;
+                    return CCWKeycode;
+                    break;
+                case Encoderstate::ENCODER_STATE_C: // CW
+                    State = newState;
+                    return CWKeycode;
+                    break;
+            }
+            break;
+    }
+    State = newState;
+    return 0;
 }

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 <Pierre Constantineau, Julian Komaromy>
+Copyright 2018 <Pierre Constantineau>
 
 3-Clause BSD License
 
@@ -17,42 +17,29 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-
-#ifndef ROTARY_ENCODER_H
-#define ROTARY_ENCODER_H
 #include <stdint.h>
-#include <vector>
-#include "advanced_keycodes.h"
+
 #include "hid_keycodes.h"
+#include "hardware_variants.h"
+#include "keyboard_config.h"
+#include "advanced_keycodes.h"
+#include "Key.h"
+#include "RotaryEncoder.h"  // need this for encoders
+#include <array>
+#include <vector>
+#ifndef KEYMAP_H
+#define KEYMAP_H
 
+#define KC_CAP_D MOD(MOD_LSHIFT, KC_D)
+#define NUM_LAYERS 2
 
+#define _L0 0
+#define _L1  1
 
-//std::vector<RotaryEncoder> encoders ;
+void setupKeymap();
+extern std::array<std::array<Key, MATRIX_COLS>, MATRIX_ROWS> matrix;
 
-enum class Encoderstate {
-    ENCODER_STATE_UNKNOWN = 0,
-    ENCODER_STATE_A = 1,
-    ENCODER_STATE_B = 2,
-    ENCODER_STATE_C = 3,
-    ENCODER_STATE_D = 4,
-};
+// need this for encoders
+extern std::vector<RotaryEncoder> encoders ;
 
-class RotaryEncoder {
-    public:
-        RotaryEncoder(uint16_t detectKeyCodeA, uint16_t detectKeyCodeB, uint16_t sendKeyCodeCW, uint16_t sendKeyCodeCCW);
-        void StartDetect();
-        void ProcessKeycode(uint16_t KeyCode);
-        uint16_t CompleteDetect(void);
-        uint16_t CompleteDetectTest(void);
-
-    private:
-         uint16_t C2AKeycode;
-         uint16_t C2BKeycode;
-         uint16_t CWKeycode;
-         uint16_t CCWKeycode; 
-         Encoderstate State;  
-         bool statusA;
-         bool statusB;
-    };
-
-#endif /* KEY_H */
+#endif /* KEYMAP_H */

@@ -334,6 +334,20 @@ bool KeyScanner::getReport()
         remotespecialkeycode=0;
     }
 
+
+    for (auto encoder : encoders)           // process encoders first to add keys to activekeys if rotation is detected
+    {
+        encoder.StartDetect();              // needed to reset the A and B pins states.  otherwise it won't see the 1->0 transitions.
+        for (auto keycode : activeKeys)     
+        {
+            encoder.ProcessKeycode(keycode);
+        }
+        auto addkey = encoder.CompleteDetectTest();
+        if (addkey>0){activeKeys.push_back(addkey);}
+        
+    }
+
+
     for (auto keycode : activeKeys) 
     {
         auto hidKeycode = static_cast<uint8_t>(keycode & 0x00FF);
@@ -361,7 +375,7 @@ bool KeyScanner::getReport()
             case KC_RESERVED_A8: consumer = keycode;  extraModifiers=0; break;              // KC_RESERVED_A8 is the keycode marker for repeating consumer reports.
             case KC_RESERVED_A9: mouse = keycode; extraModifiers=0; break;                  // KC_RESERVED_A8 is the keycode marker for mouse reports. Mousekeys can be repeated... We therefore don't need the macro logic
             case KC_RESERVED_AA: special_key = keycode; extraModifiers=0; break;            // KC_RESERVED_AA is the keycode marker for special keys.
-            case KC_RESERVED_AB: rotaryEncoderBuffer.push_back(keycode);break;
+            case KC_RESERVED_AB: extraModifiers=0;break;                                    // KC_RESERVED_AB is the keycode marker for Rotary Encoder locations in the matrix.
         }
         //add all of the extra modifiers into the curren modifier 
         currentMod |= extraModifiers;
