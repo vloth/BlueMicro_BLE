@@ -5,10 +5,11 @@ on:
     branches: [ OLED ]
 
 jobs:
-  fqbn-build:
+  OLED-build:
     runs-on: ubuntu-latest
     container: jpconstantineau/arduino-cli-bluefruit-nrf52
     steps:
     - uses: actions/checkout@v2
     - name: Build the firmwares
+      run: ls ./build/docker
       run: ./build/docker/nrf52840.sh crkbd:all:all
