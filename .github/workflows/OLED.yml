@@ -1,0 +1,14 @@
+name: Compile firmwares - fqbn
+
+on:
+  push:
+    branches: [ OLED ]
+
+jobs:
+  fqbn-build:
+    runs-on: self-hosted
+    container: jpconstantineau/arduino-cli-bluefruit-nrf52
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the firmwares
+      run: ./build/docker/nrf52840.sh crkbd:all:all
