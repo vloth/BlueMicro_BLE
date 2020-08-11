@@ -6,7 +6,7 @@ on:
 
 jobs:
   fqbn-build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: jpconstantineau/arduino-cli-bluefruit-nrf52
     steps:
     - uses: actions/checkout@v2
