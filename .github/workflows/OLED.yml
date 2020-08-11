@@ -1,4 +1,4 @@
-name: Compile firmwares - fqbn
+name: Compile firmware for crkbd - OLED Branch
 
 on:
   push:
