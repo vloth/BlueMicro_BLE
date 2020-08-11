@@ -105,22 +105,22 @@ if [ -z "$boardParam" ]; then
 
    printf "\n"
    printf "This script can be run with paramters\n"
-   printf "./build-macos [-v] [-c] keyboard:keymap:target\n"
+   printf "./gh-nrf52840.sh [-v] [-c] keyboard:keymap:target\n"
 
    selectedKeyboard="all"
    selectedKeymap="all"
    selectedTarget="all"
    
    printf "\n"
-   read -p "Keyboard name (eg ErgoTravel) [all]: " selectedKeyboard
+   
    selectedKeyboard=${selectedKeyboard:-all}
 
    if [ "$selectedKeyboard" != "all" ]; then
-      read -p "Keymap name (eg default) [all]: " selectedKeymap
+      
       selectedKeymap=${selectedKeymap:-all}
 
       if [ "$selectedKeymap" != "all" ]; then
-         read -p "Target name (eg left / right / master) [all]: " selectedTarget
+         
          selectedTarget=${selectedTarget:-all}
       fi
    fi
