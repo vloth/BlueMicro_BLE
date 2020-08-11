@@ -11,6 +11,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the firmwares
-      run: 
-       - ls ./build/docker
-       - ./build/docker/nrf52840.sh crkbd:all:all
+    - run: ls ./build/docker
+    - run: ./build/docker/nrf52840.sh crkbd:all:all
