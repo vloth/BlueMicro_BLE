@@ -26,7 +26,7 @@ arduinoPath="/usr/share/arduino"
 #replace this variable with path to your avr installation
 #arduinoAvrPath="$arduinoPath/hardware/arduino/avr"
 
-blueMicroPath=$(pwd/../..)
+blueMicroPath=$(pwd)/../..
 ls ${blueMicroPath}
 ls /github
 firmwarePath="${blueMicroPath}/firmware"
