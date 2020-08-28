@@ -53,8 +53,21 @@ StatePayload  statedata;
   BLEClientCharacteristic KBLinkClientChar_Buffer        = BLEClientCharacteristic(UUID128_CHR_KEYBOARD_BUFFER); 
 #endif
 /**************************************************************************************************************************/
-void setupBluetooth(void)
+void setupBluetooth(uint8_t BLEProfile)
 {
+  if (BLEProfile >0)
+  {
+    ble_gap_addr_t gap_addr;
+    gap_addr = Bluefruit.getAddr();
+    gap_addr.addr[5]+BLEProfile;
+    Bluefruit.setAddr(&gap_addr);
+
+  }
+  else
+  {
+    /* Use Default MAC address */
+  }
+  
   //Bluefruit.configPrphBandwidth(BANDWIDTH_MAX); // OK for nrf52840
   Bluefruit.configPrphBandwidth(BANDWIDTH_HIGH);
  // Bluefruit.configCentralBandwidth(BANDWIDTH_HIGH);

@@ -24,6 +24,9 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 #include <InternalFileSystem.h>
 
 using namespace Adafruit_LittleFS_Namespace;
+#define KBD_FNAME_STATE   "/PersistentState"
+#define KBD_FNAME_LEN     sizeof(KBD_FNAME_STATE)
+
 /**************************************************************************************************************************/
 // Keyboard Matrix
 byte rows[] MATRIX_ROW_PINS;        // Contains the GPIO Pin Numbers defined in keyboard_config.h
@@ -42,16 +45,78 @@ static std::vector<uint16_t> stringbuffer; // buffer for macros to type into...
 
 /**************************************************************************************************************************/
 void setupConfig() {
-  keyboardconfig.ledbacklight=BACKLIGHT_PWM_ON;
-  keyboardconfig.ledrgb=WS2812B_LED_ON;
-  keyboardconfig.timerkeyscaninterval=HIDREPORTINGINTERVAL;
-  keyboardconfig.timerbatteryinterval=BATTERYINTERVAL;
-  keyboardconfig.VCCSwitchAvailable=(VCC_ENABLE_GPIO==1);
-  keyboardconfig.VCCSwitchEnabled=true;
+
+InternalFS.begin();
+if ( !InternalFS.exists(KBD_FNAME_STATE) ) 
+{
+  //InternalFS.mkdir(KBD_DIR_STATE);
+  resetConfig();
+///  saveConfig();
+
+}
+else
+{
+  resetConfig();
+ // loadConfig();
+}
 
   keyboardstate.helpmode = false;
   keyboardstate.timestamp = millis();
   keyboardstate.lastupdatetime = keyboardstate.timestamp;
+}
+
+
+void saveConfig()
+{
+ // char filename[KBD_FNAME_LEN]  = KBD_FNAME_STATE;
+     // delete if file already exists
+  if ( InternalFS.exists(KBD_FNAME_STATE) ) InternalFS.remove(KBD_FNAME_STATE);
+  File file(InternalFS);
+  if( file.open(KBD_FNAME_STATE, FILE_O_WRITE) )
+    {
+     // file.write( sizeof(PersistentState) );
+      file.write( (uint8_t const *) &keyboardstate, sizeof(PersistentState));
+      file.close();
+    }
+  
+}
+
+void loadConfig()
+{
+ // char filename[KBD_FNAME_LEN]  = KBD_FNAME_STATE;
+  if ( InternalFS.exists(KBD_FNAME_STATE) ){
+    File file(KBD_FNAME_STATE, FILE_O_READ, InternalFS);
+  //  VERIFY(file,);
+
+  //  int datalen = file.read();
+   // if(datalen == sizeof(PersistentState))
+    {
+      file.read(&keyboardstate, sizeof(PersistentState));
+      file.close();
+    }
+ //   else // file wrong size
+    {
+//      file.close();
+ ///     resetConfig();
+  //    saveConfig();
+    }
+  }
+  else  // file does not exist
+  {
+    resetConfig();
+    saveConfig();
+  }
+}
+
+void resetConfig()
+{
+  keyboardconfig.ledbacklight=BACKLIGHT_PWM_ON;
+  keyboardconfig.ledrgb=WS2812B_LED_ON;
+  keyboardconfig.timerkeyscaninterval=HIDREPORTINGINTERVAL;
+  keyboardconfig.timerbatteryinterval=BATTERYINTERVAL;
+  keyboardconfig.VCCSwitchAvailable=VCC_ENABLE_GPIO;
+  keyboardconfig.VCCSwitchEnabled=1;
+  keyboardconfig.BLEProfile=0;
 }
 
 
@@ -74,7 +139,7 @@ void setup() {
 
   keyscantimer.begin(keyboardconfig.timerkeyscaninterval, keyscantimer_callback);
   batterytimer.begin(keyboardconfig.timerbatteryinterval, batterytimer_callback);
-  setupBluetooth();
+  setupBluetooth(0);
 
   if(keyboardconfig.ledbacklight)
   {
@@ -433,9 +498,56 @@ void process_keyboard_function(uint16_t keycode)
       sprintf(buffer,"cent\t %i\t %s",keyboardstate.rssi_cent, keyboardstate.peer_name_cent);addStringToQueue(buffer); addKeycodeToQueue(KC_ENTER); 
       sprintf(buffer,"prph\t %i\t %s",keyboardstate.rssi_prph, keyboardstate.peer_name_prph);addStringToQueue(buffer); addKeycodeToQueue(KC_ENTER);
       sprintf(buffer,"cccd\t %i\t %s",keyboardstate.rssi_cccd, keyboardstate.peer_name_cccd);addStringToQueue(buffer); addKeycodeToQueue(KC_ENTER);
-
-
-      break;      
+      break;
+    case BLEPROFILE_0:
+      keyboardconfig.BLEProfile = BLEPROFILE_0 - BLEPROFILE_0;
+      saveConfig(); delay(1000);
+      NVIC_SystemReset();
+      break;  
+    case BLEPROFILE_1:
+      keyboardconfig.BLEProfile = BLEPROFILE_1 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break; 
+    case BLEPROFILE_2:
+      keyboardconfig.BLEProfile = BLEPROFILE_2 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break;  
+    case BLEPROFILE_3:
+      keyboardconfig.BLEProfile = BLEPROFILE_3 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break;  
+    case BLEPROFILE_4:
+      keyboardconfig.BLEProfile = BLEPROFILE_4 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break;  
+    case BLEPROFILE_5:
+      keyboardconfig.BLEProfile = BLEPROFILE_5 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break; 
+    case BLEPROFILE_6:
+      keyboardconfig.BLEProfile = BLEPROFILE_6 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break;  
+    case BLEPROFILE_7:
+      keyboardconfig.BLEProfile = BLEPROFILE_7 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break; 
+    case BLEPROFILE_8:
+      keyboardconfig.BLEProfile = BLEPROFILE_8 - BLEPROFILE_0;
+      saveConfig();delay(1000);
+      NVIC_SystemReset();
+      break;  
+    case BLEPROFILE_9:
+      resetConfig();
+      saveConfig();
+      break;           
   }
 }
 

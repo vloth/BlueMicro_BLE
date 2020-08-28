@@ -46,7 +46,7 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
     } StatePayload;
 
 
-    void setupBluetooth(void);
+    void setupBluetooth(uint8_t BLEProfile);
     void startAdv(void);
     void set_keyboard_led(uint16_t conn_handle, uint8_t led_bitmap);
 

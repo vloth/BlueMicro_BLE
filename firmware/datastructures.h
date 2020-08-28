@@ -22,10 +22,11 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 #include <array>
 
     typedef struct { 
-        bool    ledbacklight;  
-        bool    ledrgb; 
-        bool    VCCSwitchAvailable;  
-        bool    VCCSwitchEnabled;   
+        uint8_t    ledbacklight;  
+        uint8_t    ledrgb; 
+        uint8_t    VCCSwitchAvailable;  
+        uint8_t    VCCSwitchEnabled;
+        uint8_t  BLEProfile;   
         uint32_t timerkeyscaninterval;
         uint32_t timerbatteryinterval;   
          

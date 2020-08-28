@@ -400,6 +400,18 @@ enum hid_keyboard_keypad_usage {
 #define UF2_DFU             KB(KC_ESC)
 #define CLEAR_BONDS         KB(KC_F)
 
+
+#define BLEPROFILE_0        KB(KC_KP_1)
+#define BLEPROFILE_1        KB(KC_KP_2)
+#define BLEPROFILE_2        KB(KC_KP_3)
+#define BLEPROFILE_3        KB(KC_KP_4)
+#define BLEPROFILE_4        KB(KC_KP_5)
+#define BLEPROFILE_5        KB(KC_KP_6)
+#define BLEPROFILE_6        KB(KC_KP_7)
+#define BLEPROFILE_7        KB(KC_KP_8)
+#define BLEPROFILE_8        KB(KC_KP_9)
+#define BLEPROFILE_9        KB(KC_KP_0)
+
 #define BL_TOGG             KB(KC_G)
 #define BL_STEP             KB(KC_H)
 #define BL_ON               KB(KC_I)
