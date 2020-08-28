@@ -48,7 +48,7 @@ void setupKeymap() {
         KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO, \
         LAYER_2,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO, \
         KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_NO,KC_UP, \
-        KC_NO,KC_NO,KC_NO,          KC_NO,                    LAYER_1,KC_LEFT,KC_DOWN,KC_RIGHT);
+        PRINT_BLE,PRINT_INFO,PRINT_BATTERY,          KC_NO,                    LAYER_1,KC_LEFT,KC_DOWN,KC_RIGHT);
 
 
 
