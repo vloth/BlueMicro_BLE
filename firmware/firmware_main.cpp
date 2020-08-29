@@ -32,7 +32,7 @@ byte rows[] MATRIX_ROW_PINS;        // Contains the GPIO Pin Numbers defined in 
 byte columns[] MATRIX_COL_PINS;     // Contains the GPIO Pin Numbers defined in keyboard_config.h  
 //uint32_t lastupdatetime =0;
 SoftwareTimer keyscantimer, batterytimer;
-
+bool save2flash = false;
 PersistentState keyboardconfig;
 DynamicState keyboardstate;
 
@@ -81,12 +81,7 @@ void loadConfig() {
 
 
 void saveConfig()
-{
-  keyscantimer.stop();
-  batterytimer.stop();
-  delay(1000);
-  
-  
+{ 
 	if (InternalFS.exists(kPersistentSettingsFile))
 	{
 		InternalFS.remove(kPersistentSettingsFile);
@@ -98,9 +93,6 @@ void saveConfig()
 		file.write((uint8_t *)&keyboardconfig, sizeof(keyboardconfig));
 		file.close();
 	} 
-  delay(1000);
-  keyscantimer.start();
-  batterytimer.start();
 }
 
 
@@ -135,7 +127,7 @@ void setup() {
 
   keyscantimer.begin(keyboardconfig.timerkeyscaninterval, keyscantimer_callback);
   batterytimer.begin(keyboardconfig.timerbatteryinterval, batterytimer_callback);
-  setupBluetooth(1);
+  setupBluetooth(keyboardconfig.BLEProfile);
 
   if(keyboardconfig.ledbacklight)
   {
@@ -497,52 +489,63 @@ void process_keyboard_function(uint16_t keycode)
       break;
     case BLEPROFILE_0:
       keyboardconfig.BLEProfile = 0;
-      saveConfig(); 
+      save2flash = true;
+      //saveConfig(); 
      // NVIC_SystemReset();
       break;  
     case BLEPROFILE_1:
       keyboardconfig.BLEProfile = 1;
-      saveConfig();
-    //  NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break; 
     case BLEPROFILE_2:
       keyboardconfig.BLEProfile = 2;
-      saveConfig();delay(1000);
-//NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break;  
     case BLEPROFILE_3:
       keyboardconfig.BLEProfile = 3;
-      saveConfig();delay(1000);
-    ////  NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break;  
     case BLEPROFILE_4:
       keyboardconfig.BLEProfile = 4;
-      saveConfig();delay(1000);
-//NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break;  
     case BLEPROFILE_5:
       keyboardconfig.BLEProfile = 5 ;
-      saveConfig();delay(1000);
+      save2flash = true;
+      //saveConfig(); 
      // NVIC_SystemReset();
       break; 
     case BLEPROFILE_6:
       keyboardconfig.BLEProfile = 6;
-      saveConfig();delay(1000);
-    //  NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break;  
     case BLEPROFILE_7:
       keyboardconfig.BLEProfile = 7;
-      saveConfig();delay(1000);
-    //  NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break; 
     case BLEPROFILE_8:
       keyboardconfig.BLEProfile = 8 ;
-      saveConfig();delay(1000);
-    //  NVIC_SystemReset();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break;  
     case BLEPROFILE_9:
       resetConfig();
-      saveConfig();
+      save2flash = true;
+      //saveConfig(); 
+     // NVIC_SystemReset();
       break;           
   }
 }
@@ -656,7 +659,17 @@ void sendKeyPresses() {
 // put your main code here, to run repeatedly:
 /**************************************************************************************************************************/
 // cppcheck-suppress unusedFunction
-void loop() {};  // loop is now empty and no longer being called.
+void loop() {
+
+
+        if (save2flash){
+          saveConfig(); 
+          save2flash=false;
+        }
+        delay(1000);
+
+     // NVIC_SystemReset();
+};  // loop is now empty and no longer being called.
 // keyscantimer is being called instead
 /**************************************************************************************************************************/
 void keyscantimer_callback(TimerHandle_t _handle) {
