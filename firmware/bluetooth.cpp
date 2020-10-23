@@ -56,7 +56,7 @@ StatePayload  statedata;
 void setupBluetooth(void)
 {
   //Bluefruit.configPrphBandwidth(BANDWIDTH_MAX); // OK for nrf52840
-  Bluefruit.configPrphBandwidth(BANDWIDTH_HIGH);
+  Bluefruit.configPrphBandwidth(BANDWIDTH_AUTO);
  // Bluefruit.configCentralBandwidth(BANDWIDTH_HIGH);
   Bluefruit.begin(PERIPHERAL_COUNT,CENTRAL_COUNT);                            // Defined in firmware_config.h
   Bluefruit.autoConnLed(BLE_LED_ACTIVE);                                               // make sure the BlueFruit connection LED is not toggled.

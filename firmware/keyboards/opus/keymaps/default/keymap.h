@@ -1,8 +1,7 @@
 /*
-Copyright 2018-2020 <Pierre Constantineau, Julian Komaromy>
+Copyright 2018 <Pierre Constantineau>
 
 3-Clause BSD License
-
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -18,66 +17,23 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-#include "advanced_keycodes.h"
+#include <stdint.h>
 #include "hid_keycodes.h"
-#ifndef KEY_STATE
-#define KEY_STATE
-
-
 #include "keyboard_config.h"
-#include "firmware_config.h"
+#include "advanced_keycodes.h"
+#include "Key.h"
+#include <array>
+#ifndef KEYMAP_H
+#define KEYMAP_H
 
-#ifndef DOUBLETAP_TIME_LIMIT
-  #define DOUBLETAP_TIME_LIMIT 200
-#endif
-#ifndef TIME_TILL_HOLD
-  #define TIME_TILL_HOLD 120
-#endif
-#ifndef TIME_TILL_RELEASE
-  #define TIME_TILL_RELEASE 15 // was 80 
-#endif
+#define _L0 0
+#define _L1 1
+#define _L2 2
 
-enum class Method {
-    PRESS = 0,
-    MT_TAP = 1,
-    MT_HOLD = 2,
-    DT_TAP = 3,
-    DT_DOUBLETAP = 4,
-    NONE = 5,
-};
+void setupKeymap();
+extern std::array<std::array<Key, MATRIX_COLS>, MATRIX_ROWS> matrix;
 
-class KeyState 
-{
-    public:
-        KeyState();
-        
-        void press(unsigned long currentMillis);
-        void clear(unsigned long currentMillis);
-
-        void addMethod(Method method);
-
-        enum class State
-        {
-            RELEASED,       // simply released 
-            PRESSED,        // a simple press
-
-            MT_TAPPED,      // a released press
-            MT_HELD,        // a constant press
-            
-            DT_TAPPED,      // if a tap can't be doubled anymore
-            DT_DOUBLETAPPED // two presses with a release/tap in between
-        };
-
-        State getState() const;
-
-    private:
-        bool canDoubletap;
-        bool checkModTap, checkDoubleTap;
-
-        //std::array<5, bool> checkMethods;
-
-        State state;
-        unsigned long lastChanged;
-};
 
 #endif
+
+

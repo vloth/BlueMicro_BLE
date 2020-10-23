@@ -1,8 +1,7 @@
 /*
-Copyright 2018-2020 <Pierre Constantineau, Julian Komaromy>
+Copyright 2020 <Pierre Constantineau>
 
 3-Clause BSD License
-
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -18,66 +17,44 @@ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR P
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-#include "advanced_keycodes.h"
-#include "hid_keycodes.h"
-#ifndef KEY_STATE
-#define KEY_STATE
+#ifndef HARDWARE_CONFIG_H
+#define HARDWARE_CONFIG_H
+#include "hardware_variants.h"
 
 
-#include "keyboard_config.h"
-#include "firmware_config.h"
+/* HARDWARE DEFINITION*/
+/* key matrix size */
+#define MATRIX_ROWS 4
+#define MATRIX_COLS 12
+#define MATRIX_ROW_PINS { 45, 43, 10, 9 }
+#define MATRIX_COL_PINS { 17, 20, 22, 24, 32, 11, 36, 38, 31, 29, 2, 47 }
 
-#ifndef DOUBLETAP_TIME_LIMIT
-  #define DOUBLETAP_TIME_LIMIT 200
-#endif
-#ifndef TIME_TILL_HOLD
-  #define TIME_TILL_HOLD 120
-#endif
-#ifndef TIME_TILL_RELEASE
-  #define TIME_TILL_RELEASE 15 // was 80 
-#endif
+#define UNUSED_PINS {}
 
-enum class Method {
-    PRESS = 0,
-    MT_TAP = 1,
-    MT_HOLD = 2,
-    DT_TAP = 3,
-    DT_DOUBLETAP = 4,
-    NONE = 5,
-};
+/* COL2ROW or ROW2COL */
+#define DIODE_DIRECTION COL2ROW
+       #define BATTERY_TYPE BATT_LIPO
+        #define VBAT_PIN  4
+        #define VCC_PIN 13
+        #define VCC_POLARITY_ON 0
+   /*     #define D3      6  
+        #define D2      8   
+        #define D1      17  
+        #define D0      20  
+        #define D4      22
+        #define C6      24
+        #define D7      32 //1.00  = 32+0
+        #define E6      11
+        #define B4      36 //1.04  = 32+4
+        #define B5      38 //1.06  = 32+6
 
-class KeyState 
-{
-    public:
-        KeyState();
-        
-        void press(unsigned long currentMillis);
-        void clear(unsigned long currentMillis);
-
-        void addMethod(Method method);
-
-        enum class State
-        {
-            RELEASED,       // simply released 
-            PRESSED,        // a simple press
-
-            MT_TAPPED,      // a released press
-            MT_HELD,        // a constant press
-            
-            DT_TAPPED,      // if a tap can't be doubled anymore
-            DT_DOUBLETAPPED // two presses with a release/tap in between
-        };
-
-        State getState() const;
-
-    private:
-        bool canDoubletap;
-        bool checkModTap, checkDoubleTap;
-
-        //std::array<5, bool> checkMethods;
-
-        State state;
-        unsigned long lastChanged;
-};
-
-#endif
+        #define F4      31
+        #define F5      29 
+        #define F6      2
+        #define F7      47 //1.15  = 32+15
+        #define B1      45 //1.13  = 32+13
+        #define B3      43 //1.11 = 32+11
+        #define B2      10
+        #define B6      9
+        #define NC      33 //1.01 = 32+1 // NC is for not connected....*/
+#endif /* HARDWARE_CONFIG_H */
